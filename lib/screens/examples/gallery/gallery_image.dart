@@ -1,11 +1,23 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'gallery_example_item.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'gallery_item.dart';
 import 'gallery_photo_view_wrapper.dart';
 
 class GalleryImage extends StatefulWidget {
-  GalleryImage({Key key}) : super(key: key);
+  final List<GalleryItem> items;
+  final double hImgage;
+  final double hThumnail;
+  final double wThumnail;
+  GalleryImage(
+      {Key key,
+      @required this.items,
+      this.hImgage = 300,
+      this.hThumnail = 50,
+      this.wThumnail = 50})
+      : assert(items != null, 'Bắt buộc có danh sách item'),
+        super(key: key);
 
   @override
   _GalleryImageState createState() => _GalleryImageState();
@@ -24,17 +36,20 @@ class _GalleryImageState extends State<GalleryImage> {
     });
   }
 
-  void open(BuildContext context, final int index) {
+  void open(BuildContext context, final String id) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => GalleryPhotoViewWrapper(
-            galleryItems: galleryItems,
-            backgroundDecoration: const BoxDecoration(
-              color: Colors.black,
-            ),
-            initialIndex: index,
-            scrollDirection: Axis.horizontal),
+          items: widget.items.where((x) => x.isVideo == false).toList(),
+          backgroundDecoration: const BoxDecoration(
+            color: Colors.black,
+          ),
+          initialId: id,
+          scrollDirection: Axis.horizontal,
+          hThumnail: widget.hThumnail,
+          wThumnail: widget.wThumnail,
+        ),
       ),
     );
   }
@@ -42,12 +57,12 @@ class _GalleryImageState extends State<GalleryImage> {
   @override
   Widget build(BuildContext context) {
     thumnails = CarouselSlider.builder(
-      itemCount: galleryItems.length,
+      itemCount: widget.items.length,
       itemBuilder: (BuildContext context, int i) => Container(
           margin: const EdgeInsets.all(2.0),
           child: Container(
-            height: 50,
-            width: 50,
+            height: widget.hThumnail,
+            width: widget.wThumnail,
             decoration: index == i
                 ? BoxDecoration(
                     border: Border.all(color: Colors.blueAccent),
@@ -62,11 +77,13 @@ class _GalleryImageState extends State<GalleryImage> {
                 });
                 images.jumpToPage(i);
               }, // handle your image tap here
-              child: Image.asset(galleryItems[i].resource),
+              child: widget.items[i].isVideo
+                  ? Image.asset(widget.items[i].thumnail)
+                  : Image.asset(widget.items[i].resource),
             ),
           )),
-      enlargeCenterPage: false, //effect scale item when scroll
-      height: 50,
+      enlargeCenterPage: true, //effect scale item when scroll
+      height: widget.wThumnail,
       viewportFraction: 0.2, //full screen
       autoPlayCurve: Curves.fastOutSlowIn,
       scrollDirection: Axis.horizontal,
@@ -76,24 +93,36 @@ class _GalleryImageState extends State<GalleryImage> {
       onPageChanged: (index) {},
     );
     images = CarouselSlider.builder(
-      itemCount: galleryItems.length,
+      itemCount: widget.items.length,
       itemBuilder: (BuildContext context, int i) => Container(
           width: MediaQuery.of(context).size.width,
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
           child: GestureDetector(
             onTap: () {
               setState(() {
                 index = i;
               });
             }, // handle your image tap here
-            child: GestureDetector(
-              onTap: () {
-                open(context, i);
-              }, // handle your image tap here
-              child: Image.asset(galleryItems[i].resource),
-            ),
+            child: !widget.items[i].isVideo
+                ? GestureDetector(
+                    onTap: () {
+                      open(context, widget.items[i].id);
+                    }, // handle your image tap here
+                    child: Image.asset(widget.items[i].resource),
+                  )
+                : YoutubePlayer(
+                    controller: YoutubePlayerController(
+                      initialVideoId: YoutubePlayer.convertUrlToId(
+                          widget.items[i].resource),
+                      flags: YoutubePlayerFlags(
+                          autoPlay: true,
+                          hideControls: true,
+                          hideThumbnail: true),
+                    ),
+                    showVideoProgressIndicator: false,
+                  ),
           )),
-      height: 300,
+      height: widget.hImgage,
       initialPage: index,
       reverse: false,
       enableInfiniteScroll: false,
