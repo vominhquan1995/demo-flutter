@@ -16,7 +16,7 @@ class GalleryImage extends StatefulWidget {
       this.hImgage = 300,
       this.hThumnail = 50,
       this.wThumnail = 50})
-      : assert(items != null, 'Bắt buộc có danh sách item'),
+      : assert(items != null, 'Required param items type List<GalleryItem>'),
         super(key: key);
 
   @override
