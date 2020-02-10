@@ -185,7 +185,7 @@ class _SearchBarExampleState extends State<SearchBarExample> {
         margin: const EdgeInsets.only(right: 5),
         child: FlatButton(
           onPressed: () {
-            redirectPageResult(item.key);
+            redirectPageResult(item.name);
           },
           child: Text(
             item.name,
@@ -233,7 +233,6 @@ class _SearchBarExampleState extends State<SearchBarExample> {
   }
 
   Future<bool> _clearHistory() {
-    log('call clear');
     service.clearHistory();
     bloc.add(InitData());
   }

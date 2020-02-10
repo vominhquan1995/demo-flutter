@@ -11,6 +11,7 @@ import 'package:demo_flutter/screens/examples/qr_scan_example.dart';
 import './app_bar.dart';
 import 'examples/navigator_drawer_filter/navigator_drawer_filter.dart';
 import 'examples/search/search_bar_example.dart';
+import 'examples/search/widget/search_box_static.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -112,6 +113,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   );
                 }, text: "Search Page"),
+                SearchBoxStatic(value: 'asdsadsa', isPageResult: false)
               ],
             ),
           ),

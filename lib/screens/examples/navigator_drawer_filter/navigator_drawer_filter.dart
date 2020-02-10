@@ -1,4 +1,5 @@
 import 'package:demo_flutter/screens/examples/search/search_bar_example.dart';
+import 'package:demo_flutter/screens/examples/search/widget/search_box_static.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -164,90 +165,62 @@ class _NavigatorDrawerFilterState extends State<NavigatorDrawerFilter> {
               ),
             ),
           )),
-      body: Column(
-        children: <Widget>[
-          SizedBox(height: 50),
-          Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  color: Colors.purple,
-                  border: Border.all(
-                    width: 1,
-                    color: Colors.black12,
-                  )),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                      child: GestureDetector(
-                          child: Container(
-                            width: 50,
-                            child: Icon(Icons.arrow_back, color: Colors.white),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                          })),
-                  Expanded(
-                      flex: 6,
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
-                        child: TextField(
-                          focusNode: searchFocusNode,
-                          readOnly: true,
-                          controller: searchController,
-                          style: TextStyle(
-                              color: Colors.black, fontSize: FontDefault),
-                          decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              contentPadding: const EdgeInsets.all(15),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4)),
-                              ),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4)),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4)),
-                              )),
-                        ),
-                      )),
-                  Expanded(
-                      child: GestureDetector(
-                          child: Container(
-                            width: 50,
-                            child:
-                                Icon(Icons.card_giftcard, color: Colors.white),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                          }))
-                ],
-              )),
-          Expanded(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              GestureDetector(
-                  onTap: () {
-                    globalKey.currentState.openEndDrawer();
-                  },
-                  child: Row(
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverToBoxAdapter(child: SizedBox(height: 25)),
+          SliverToBoxAdapter(
+              child:
+                  SearchBoxStatic(value: widget.keySearch, isPageResult: true)),
+          SliverToBoxAdapter(
+              child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.white,
+                  child: Column(
                     children: <Widget>[
-                      Icon(Icons.filter_list),
+                      SizedBox(height: 15),
+                      Image.asset('assets/search-empty.png'),
+                      SizedBox(height: 15),
                       Text(
-                        'Lọc (${data.length})',
-                        style: TextStyle(color: Colors.blue),
+                        'Rất tiếc !',
+                        style: TextStyle(
+                            fontSize: FontDefault * 2,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 15),
+                      Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.1),
+                          child: Text(
+                            'Không tìm thấy sản phẩm \n phù hợp với lựa chọn của bạn',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: FontDefault),
+                          )),
+                      SizedBox(height: 15),
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        height: 50,
+                        child: FlatButton(
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SearchBarExample(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'Tìm kiếm lại',
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: FontDefault),
+                            ),
+                            color: Colors.purple),
                       )
                     ],
-                  ))
-            ],
-          )),
+                  ))),
         ],
       ),
     );

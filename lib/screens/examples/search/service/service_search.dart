@@ -9,7 +9,7 @@ class SearchService {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       List<String> history = prefs.getStringList(KEY_SEARCH);
-      history = history == null ? [] : history;
+      history = history == null ? [] : history.take(10).toList();
       return history;
     } catch (e) {
       return [];
@@ -32,7 +32,7 @@ class SearchService {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       List<String> list = await getHistory();
-      list.add(item);
+      list.insert(0, item);
       await prefs.setStringList(KEY_SEARCH, list);
       return true;
     } catch (e) {
