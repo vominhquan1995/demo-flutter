@@ -12,11 +12,9 @@ class SearchBoxStatic extends StatefulWidget {
 }
 
 class _SearchBoxStaticState extends State<SearchBoxStatic> {
-  TextEditingController searchController;
   @override
   void initState() {
     super.initState();
-    searchController = new TextEditingController(text: widget.value);
   }
 
   void onClickSearch() {

@@ -4,6 +4,7 @@ import 'package:demo_flutter/screens/examples/navigator_drawer_filter/navigator_
 import 'package:demo_flutter/screens/examples/search/service/service_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
@@ -44,15 +45,30 @@ class _SearchBarExampleState extends State<SearchBarExample> {
   }
 
   redirectPageResult(String key) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NavigatorDrawerFilter(
-          keySearch: key,
-        ),
-      ),
-    );
-    _updateHistory(key);
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
+    // _updateHistory(key);
+    Future.delayed(const Duration(milliseconds: 500), () {
+      Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                NavigatorDrawerFilter(
+              keySearch: key,
+            ),
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return new SlideTransition(
+                position: new Tween<Offset>(
+                  begin: const Offset(1.0, 0.0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              );
+            },
+          ));
+    });
   }
 
   @override
@@ -85,6 +101,7 @@ class _SearchBarExampleState extends State<SearchBarExample> {
                     Expanded(
                         flex: 9,
                         child: TextField(
+                          autofocus: true,
                           controller: searchController,
                           focusNode: searchFocusNode,
                           decoration: InputDecoration(
@@ -121,8 +138,8 @@ class _SearchBarExampleState extends State<SearchBarExample> {
           BlocBuilder(
               bloc: bloc,
               builder: (BuildContext context, SearchBlocState state) {
+                print(state);
                 if (state is LoadedData) {
-                  FocusScope.of(context).requestFocus(searchFocusNode);
                   return SliverToBoxAdapter(
                       child: Column(
                     children: <Widget>[
