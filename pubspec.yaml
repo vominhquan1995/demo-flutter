@@ -15,10 +15,17 @@ dependencies:
   qr_code_scanner: ^0.0.12
   toast: ^0.1.5
   youtube_player_flutter: ^6.0.3+2
+  shared_preferences: ^0.5.6+1
+  flutter_bloc: ^3.1.0
+  equatable: ^1.0.1
+  json_annotation: ^3.0.0
+  shimmer: ^1.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  json_serializable: ^3.2.3
+  build_runner: ^1.7.1
 
 
 # For information on the generic Dart part of this file, see the

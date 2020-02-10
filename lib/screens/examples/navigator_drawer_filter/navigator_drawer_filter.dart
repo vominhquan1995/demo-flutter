@@ -1,5 +1,9 @@
+import 'package:demo_flutter/screens/examples/search/search_bar_example.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+const MarginBody = EdgeInsets.fromLTRB(10, 20, 10, 10);
+const FontDefault = 15.0;
 
 class NavigatorDrawerFilter extends StatefulWidget {
   String keySearch;
@@ -10,6 +14,8 @@ class NavigatorDrawerFilter extends StatefulWidget {
 }
 
 class _NavigatorDrawerFilterState extends State<NavigatorDrawerFilter> {
+  final FocusNode searchFocusNode = new FocusNode();
+  TextEditingController searchController;
   List<FilterItem> data = [];
   final globalKey = GlobalKey<ScaffoldState>();
   List<GroupFilterItem> filters = [
@@ -22,6 +28,23 @@ class _NavigatorDrawerFilterState extends State<NavigatorDrawerFilter> {
       FilterItem(id: '4', title: 'Chăm sóc tóc'),
     ]),
   ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    searchController = new TextEditingController(text: widget.keySearch);
+    searchFocusNode.addListener(onClickSearch);
+  }
+
+  void onClickSearch() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchBarExample(),
+      ),
+    );
+  }
+
   void _clearFilter() {
     setState(() => {data = []});
   }
@@ -131,11 +154,6 @@ class _NavigatorDrawerFilterState extends State<NavigatorDrawerFilter> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: globalKey,
-      appBar: new AppBar(
-        backgroundColor: Colors.blue,
-        actions: <Widget>[new Container()],
-        title: new Text('Navigator Drawer Filter'),
-      ),
       endDrawer: SizedBox(
           width: MediaQuery.of(context).size.width * 0.75,
           child: Drawer(
@@ -147,9 +165,72 @@ class _NavigatorDrawerFilterState extends State<NavigatorDrawerFilter> {
             ),
           )),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Row(
+          SizedBox(height: 50),
+          Container(
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  color: Colors.purple,
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.black12,
+                  )),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                      child: GestureDetector(
+                          child: Container(
+                            width: 50,
+                            child: Icon(Icons.arrow_back, color: Colors.white),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                          })),
+                  Expanded(
+                      flex: 6,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+                        child: TextField(
+                          focusNode: searchFocusNode,
+                          readOnly: true,
+                          controller: searchController,
+                          style: TextStyle(
+                              color: Colors.black, fontSize: FontDefault),
+                          decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: const EdgeInsets.all(15),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4)),
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4)),
+                              )),
+                        ),
+                      )),
+                  Expanded(
+                      child: GestureDetector(
+                          child: Container(
+                            width: 50,
+                            child:
+                                Icon(Icons.card_giftcard, color: Colors.white),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                          }))
+                ],
+              )),
+          Expanded(
+              child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               GestureDetector(
@@ -166,10 +247,7 @@ class _NavigatorDrawerFilterState extends State<NavigatorDrawerFilter> {
                     ],
                   ))
             ],
-          ),
-          Container(
-            child: Text('Key search is ${widget.keySearch}'),
-          )
+          )),
         ],
       ),
     );

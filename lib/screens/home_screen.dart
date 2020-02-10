@@ -10,7 +10,7 @@ import 'package:demo_flutter/screens/examples/rotation_examples.dart';
 import 'package:demo_flutter/screens/examples/qr_scan_example.dart';
 import './app_bar.dart';
 import 'examples/navigator_drawer_filter/navigator_drawer_filter.dart';
-import 'examples/search_bar_example.dart';
+import 'examples/search/search_bar_example.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
