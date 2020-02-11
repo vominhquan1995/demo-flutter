@@ -15,7 +15,6 @@ class SearchService {
       return [];
     }
   }
-
   Future<List<KeyHot>> getHotKey() async {
     try {
       return [

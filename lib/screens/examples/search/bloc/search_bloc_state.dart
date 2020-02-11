@@ -17,11 +17,10 @@ class InitStateSearch implements SearchBlocState {
 }
 
 class LoadedData implements SearchBlocState {
-  List<String> history;
   List<KeyHot> topKey;
-  LoadedData({this.history, this.topKey});
+  LoadedData({this.topKey});
   @override
   String toString() => 'LoadedData';
   @override
-  List<Object> get props => [history, topKey];
+  List<Object> get props => [topKey];
 }

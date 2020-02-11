@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:demo_flutter/screens/examples/navigator_drawer_filter/navigator_drawer_filter.dart';
 import 'package:demo_flutter/screens/examples/search/service/service_search.dart';
+import 'package:demo_flutter/screens/examples/search_results/search_results.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,19 +17,18 @@ const String KEY_SEARCH = 'history_seach';
 const MarginBody = EdgeInsets.fromLTRB(10, 20, 10, 10);
 const FontDefault = 15.0;
 
-class SearchBarExample extends StatefulWidget {
-  SearchBarExample({Key key}) : super(key: key);
+class SearchPage extends StatefulWidget {
+  SearchPage({Key key}) : super(key: key);
 
   @override
-  _SearchBarExampleState createState() => _SearchBarExampleState();
+  _SearchPageState createState() => _SearchPageState();
 }
 
-class _SearchBarExampleState extends State<SearchBarExample> {
+class _SearchPageState extends State<SearchPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FocusNode searchFocusNode = new FocusNode();
   final TextEditingController searchController = new TextEditingController();
-  SharedPreferences prefs;
-  List<String> history;
+  List<String> history = [];
   final SearchService service = SearchService();
   final SearchBloc bloc = SearchBloc(service: SearchService());
   @override
@@ -46,13 +46,12 @@ class _SearchBarExampleState extends State<SearchBarExample> {
 
   redirectPageResult(String key) {
     SystemChannels.textInput.invokeMethod('TextInput.hide');
-    // _updateHistory(key);
     Future.delayed(const Duration(milliseconds: 500), () {
       Navigator.pushReplacement(
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) =>
-                NavigatorDrawerFilter(
+                SearchResults(
               keySearch: key,
             ),
             transitionsBuilder: (BuildContext context,
@@ -68,6 +67,7 @@ class _SearchBarExampleState extends State<SearchBarExample> {
               );
             },
           ));
+      _updateHistory(key);
     });
   }
 
@@ -77,68 +77,52 @@ class _SearchBarExampleState extends State<SearchBarExample> {
       key: _scaffoldKey,
       body: CustomScrollView(
         slivers: <Widget>[
-          SliverToBoxAdapter(
-            child: SizedBox(height: 50),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
+          SliverAppBar(
+            shape: Border.all(color: Colors.black12, width: 1),
+            backgroundColor: Colors.white,
+            pinned: true,
+            leading: GestureDetector(
+                child: Icon(Icons.arrow_back, color: Colors.black),
+                onTap: () {
+                  Navigator.pop(context);
+                }),
+            title: Container(
                 width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(
-                      width: 1,
-                      color: Colors.black12,
-                    )),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                        flex: 1,
-                        child: GestureDetector(
-                            child: Icon(Icons.arrow_back, color: Colors.black),
-                            onTap: () {
-                              Navigator.pop(context);
-                            })),
-                    Expanded(
-                        flex: 9,
-                        child: TextField(
-                          autofocus: true,
-                          controller: searchController,
-                          focusNode: searchFocusNode,
-                          decoration: InputDecoration(
-                            suffixIcon: (searchFocusNode != null &&
-                                    searchFocusNode.hasFocus)
-                                ? Container(
-                                    width: 50,
-                                    child: FlatButton(
-                                        child: Icon(Icons.cancel,
-                                            color: Colors.black12),
-                                        onPressed: () {
-                                          FocusScope.of(context).unfocus();
-                                          //if use searchController.clear() will error
-                                          WidgetsBinding.instance
-                                              .addPostFrameCallback((_) =>
-                                                  searchController.clear());
-                                        }),
-                                  )
-                                : null,
-                            hintText: "Tìm kiếm",
-                            hintStyle: TextStyle(
-                              fontSize: FontDefault,
-                              fontWeight: FontWeight.normal,
-                              color: Color.fromRGBO(117, 117, 117, 1),
-                              height: 1.2,
-                            ),
-                            border: InputBorder.none,
-                          ),
-                          onSubmitted: (String key) => redirectPageResult(key),
-                        ))
-                  ],
+                child: TextField(
+                  autofocus: true,
+                  controller: searchController,
+                  focusNode: searchFocusNode,
+                  decoration: InputDecoration(
+                    suffixIcon: (searchFocusNode != null &&
+                            searchFocusNode.hasFocus)
+                        ? Container(
+                            width: 50,
+                            child: FlatButton(
+                                child:
+                                    Icon(Icons.cancel, color: Colors.black12),
+                                onPressed: () {
+                                  FocusScope.of(context).unfocus();
+                                  //if use searchController.clear() will error
+                                  WidgetsBinding.instance.addPostFrameCallback(
+                                      (_) => searchController.clear());
+                                }),
+                          )
+                        : null,
+                    hintText: "Tìm kiếm",
+                    hintStyle: TextStyle(
+                      fontSize: FontDefault,
+                      fontWeight: FontWeight.normal,
+                      color: Color.fromRGBO(117, 117, 117, 1),
+                      height: 1.2,
+                    ),
+                    border: InputBorder.none,
+                  ),
+                  onSubmitted: (String key) => redirectPageResult(key),
                 )),
           ),
           BlocBuilder(
               bloc: bloc,
               builder: (BuildContext context, SearchBlocState state) {
-                print(state);
                 if (state is LoadedData) {
                   return SliverToBoxAdapter(
                       child: Column(
@@ -154,7 +138,6 @@ class _SearchBarExampleState extends State<SearchBarExample> {
                           ],
                         ),
                       ),
-                      _buildHistory(state.history),
                     ],
                   ));
                 }
@@ -172,27 +155,25 @@ class _SearchBarExampleState extends State<SearchBarExample> {
                           Wrap(children: [KeyHotShimmer()])
                         ],
                       ),
-                    ),
-                    Container(
-                      margin: MarginBody,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          HeaderHistory(),
-                          ItemShimerHistory(
-                            numberLine: 4,
-                          )
-                        ],
-                      ),
                     )
                   ],
                 ));
-              })
+              }),
+          SliverToBoxAdapter(
+              child: FutureBuilder(
+            future: _getHistory(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return _buildHistory(snapshot.data);
+              }
+              return ItemShimerHistory(
+                numberLine: 4,
+              ); // or some other widget
+            },
+          )),
         ],
       ),
     );
-
-    ;
   }
 
   _buildTopSearch(List<KeyHot> topKey) {
@@ -244,14 +225,23 @@ class _SearchBarExampleState extends State<SearchBarExample> {
           );
   }
 
-  Future<bool> _updateHistory(String item) {
+  void _updateHistory(String item) {
     service.updateHistory(item);
     bloc.add(InitData());
   }
 
-  Future<bool> _clearHistory() {
+  void _clearHistory() {
+    setState(() {
+      history = [];
+    });
     service.clearHistory();
-    bloc.add(InitData());
+  }
+
+  Future<List<String>> _getHistory() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> data = prefs.getStringList(KEY_SEARCH);
+    history = data == null ? [] : data.take(10).toList();
+    return history;
   }
 }
 

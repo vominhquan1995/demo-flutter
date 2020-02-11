@@ -20,10 +20,9 @@ class SearchBloc extends Bloc<SearchBlocEvent, SearchBlocState> {
     SearchBlocEvent event,
   ) async* {
     if (event is InitData) {
-      List<String> history = await service.getHistory();
       List<KeyHot> topKey = await service.getHotKey();
       await Future.delayed(const Duration(milliseconds: 1000), () {});
-      yield LoadedData(history: history, topKey: topKey);
+      yield LoadedData( topKey: topKey);
     }
   }
 }

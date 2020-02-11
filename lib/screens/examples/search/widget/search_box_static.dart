@@ -1,4 +1,4 @@
-import 'package:demo_flutter/screens/examples/search/search_bar_example.dart';
+import 'package:demo_flutter/screens/examples/search/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,14 +22,14 @@ class _SearchBoxStaticState extends State<SearchBoxStatic> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => SearchBarExample(),
+          builder: (context) => SearchPage(),
         ),
       );
     } else {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => SearchBarExample(),
+          builder: (context) => SearchPage(),
         ),
       );
     }

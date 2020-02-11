@@ -1,16 +1,9 @@
+import 'package:demo_flutter/screens/examples/search/search.dart';
 import 'package:flutter/material.dart';
-import 'package:demo_flutter/screens/examples/controller_example.dart';
-import 'package:demo_flutter/screens/examples/custom_child_examples.dart';
-import 'package:demo_flutter/screens/examples/dialog_example.dart';
-import 'package:demo_flutter/screens/examples/full_screen_examples.dart';
 import 'package:demo_flutter/screens/examples/gallery/gallery_example.dart';
-import 'package:demo_flutter/screens/examples/hero_example.dart';
-import 'package:demo_flutter/screens/examples/inline_examples.dart';
-import 'package:demo_flutter/screens/examples/rotation_examples.dart';
 import 'package:demo_flutter/screens/examples/qr_scan_example.dart';
 import './app_bar.dart';
 import 'examples/navigator_drawer_filter/navigator_drawer_filter.dart';
-import 'examples/search/search_bar_example.dart';
 import 'examples/search/widget/search_box_static.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -109,7 +102,7 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SearchBarExample(),
+                      builder: (context) => SearchPage(),
                     ),
                   );
                 }, text: "Search Page"),
