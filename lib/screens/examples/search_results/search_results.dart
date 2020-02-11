@@ -100,35 +100,6 @@ class _SearchResultsState extends State<SearchResults> {
 
   List<Widget> _buildFilter(BuildContext context) {
     List<Widget> content = [];
-    //add header
-    content.add(
-      Container(
-        margin: EdgeInsets.symmetric(vertical: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[Icon(Icons.close), Text("Đóng")],
-                )),
-            GestureDetector(
-              onTap: () {
-                _clearFilter();
-              },
-              child: Text(
-                "Xóa chọn",
-                style: TextStyle(color: Colors.blue),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-
     filters.forEach((item) {
       List<Widget> child = [];
       item.filters.forEach((filter) {
@@ -165,13 +136,59 @@ class _SearchResultsState extends State<SearchResults> {
       endDrawer: SizedBox(
           width: MediaQuery.of(context).size.width * 0.75,
           child: Drawer(
-            child: Container(
-              margin: EdgeInsets.symmetric(vertical: 40, horizontal: 5),
               child: Column(
-                children: _buildFilter(context),
+            children: <Widget>[
+              AppBar(
+                elevation: 0.0, //shadow
+                titleSpacing: 0,
+                actions: <Widget>[Container()],
+                backgroundColor: Colors.white,
+                automaticallyImplyLeading: false,
+                title: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Icon(
+                                Icons.close,
+                                color: Colors.black,
+                              ),
+                              Text(
+                                "Đóng",
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: FontDefault),
+                              )
+                            ],
+                          )),
+                      GestureDetector(
+                        onTap: () {
+                          _clearFilter();
+                        },
+                        child: Text(
+                          "Xóa chọn",
+                          style: TextStyle(
+                              color: Colors.blue, fontSize: FontDefault),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
-            ),
-          )),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 5),
+                child: Column(
+                  children: _buildFilter(context),
+                ),
+              ),
+            ],
+          ))),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
@@ -184,7 +201,7 @@ class _SearchResultsState extends State<SearchResults> {
           ),
           SliverPersistentHeader(
             pinned: true,
-            delegate: Delegate(),
+            delegate: HeaderFilterCustom(numberFilter: data.length),
           ),
           BlocBuilder(
               bloc: bloc,
@@ -275,7 +292,9 @@ class FilterItem {
   final String title;
 }
 
-class Delegate extends SliverPersistentHeaderDelegate {
+class HeaderFilterCustom extends SliverPersistentHeaderDelegate {
+  final int numberFilter;
+  HeaderFilterCustom({this.numberFilter});
   @override
   Widget build(
           BuildContext context, double shrinkOffset, bool overlapsContent) =>
@@ -302,7 +321,8 @@ class Delegate extends SliverPersistentHeaderDelegate {
                     color: Colors.black,
                   ),
                   Text('Chọn lọc', style: TextStyle(color: Colors.black)),
-                  Text('(1)', style: TextStyle(color: Colors.blue))
+                  Text('(${numberFilter})',
+                      style: TextStyle(color: Colors.blue))
                 ],
               ),
             ),

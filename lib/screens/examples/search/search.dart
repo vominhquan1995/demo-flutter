@@ -46,29 +46,29 @@ class _SearchPageState extends State<SearchPage> {
 
   redirectPageResult(String key) {
     SystemChannels.textInput.invokeMethod('TextInput.hide');
-    Future.delayed(const Duration(milliseconds: 500), () {
-      Navigator.pushReplacement(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                SearchResults(
-              keySearch: key,
-            ),
-            transitionsBuilder: (BuildContext context,
-                Animation<double> animation,
-                Animation<double> secondaryAnimation,
-                Widget child) {
-              return new SlideTransition(
-                position: new Tween<Offset>(
-                  begin: const Offset(1.0, 0.0),
-                  end: Offset.zero,
-                ).animate(animation),
-                child: child,
-              );
-            },
-          ));
-      _updateHistory(key);
-    });
+    // Future.delayed(const Duration(milliseconds: 500), () {
+    Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              SearchResults(
+            keySearch: key,
+          ),
+          transitionsBuilder: (BuildContext context,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+              Widget child) {
+            return new SlideTransition(
+              position: new Tween<Offset>(
+                begin: const Offset(1.0, 0.0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+        ));
+    _updateHistory(key);
+    // });
   }
 
   @override

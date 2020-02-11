@@ -98,14 +98,14 @@ class HomeScreen extends StatelessWidget {
                     ),
                   );
                 }, text: "Navigator Drawer Filter"),
-                _buildItem(context, onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SearchPage(),
-                    ),
-                  );
-                }, text: "Search Page"),
+                // _buildItem(context, onPressed: () {
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) => SearchPage(),
+                //     ),
+                //   );
+                // }, text: "Search Page"),
                 SearchBoxStatic(value: 'asdsadsa', isPageResult: false)
               ],
             ),
